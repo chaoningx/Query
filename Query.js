@@ -2,6 +2,7 @@
  * xiechaoning@gmail.com
  */
 (function(window) {  
+    
 var Query = (function() {
 	var Query = function(select) {
         return new Query.fn.init(select);
