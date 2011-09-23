@@ -1,8 +1,4 @@
-/**
- * xiechaoning@gmail.com
- */
 (function(window) {  
-    
 var Query = (function() {
 	var Query = function(select) {
         return new Query.fn.init(select);
@@ -34,6 +30,8 @@ var Query = (function() {
     Query.extend = Query.fn.extend = function() {
         var arg0 = arguments[0];
         for(var i in arg0) {
+            var isExist = Query.fn[i];
+            if(isExist) { continue; }
             var o = arg0[i];
             Query.fn[i] = o;
         }
