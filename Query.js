@@ -18,11 +18,9 @@ var Query = (function() {
             return this.merge(this, ele);
         },
         merge: function(s, t) {
-            var i = 0, tlen = t.length,
-                slen = s.length;
-            slen = !slen ? 0 : slen - 1;
+            var i = 0, tlen = t.length;
             for(i; i < tlen; i++) {
-                s[slen + i] = t[i];
+                s[i] = t[i];
             }
             return s;
         },
