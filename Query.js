@@ -1,3 +1,6 @@
+/**
+ * xiechaoning@gmail.com
+ */
 (function(window) {  
 var Query = (function() {
 	var Query = function(select) {
