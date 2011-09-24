@@ -131,9 +131,9 @@ Query.fn.extend({
 		var target = this[0];
 		if(!target) { return this; }
 		if(v) {
-			return target.innerHTML;
+			return target.value;
 		}else{
-			target.innerHTML = v;
+			target.value = v;
 		}
 		return this;
 	}
