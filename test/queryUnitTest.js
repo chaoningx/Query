@@ -60,6 +60,8 @@ test('$.param()', function() {
 
 
 
+console.log($('<div><span></span><span></span></div>'));
+
 
 
 

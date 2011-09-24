@@ -1,6 +1,7 @@
 (function(window) {  
 var Query = (function() {
-	var Query = function(select) {
+	var htmlTag = /^(?:[^<]*(^<[\w\W]+>$)[^>]*$)/,
+	Query = function(select) {
         return new Query.fn.init(select);
 	};
     Query.fn = Query.prototype = {
@@ -12,6 +13,16 @@ var Query = (function() {
 			if (select.nodeType) {
 				this[0] = select;
 				this.length = 1;
+				return this;
+			}
+			if(htmlTag.test(select)) {
+				var temp = document.createElement('div');
+				temp.innerHTML = select;
+				var i = 0, nodes = temp.childNodes, len = nodes.length;
+				for(i; i < len; i++) {
+					this[i] = nodes[i];
+				}
+				this.length = len;
 				return this;
 			}
             try {
