@@ -261,36 +261,73 @@ Query.extend({
 		params = Query.merge({
 			url: '',
 			data: '',
-			type: 'GET',
+			type: 'GET', //GET, POST
 			async: true,
 			success: '',
 			error: '',
 			complete: '',
-			beforeSend: '',
-			dataType: 'json',
-			cache: true,
-			timeout: 5000,
+			beforeSend: false,
+			dataType: 'json', // json html
+			timeout: 10000,
+			contentType: 'application/x-www-form-urlencoded',
 			user: '',
-			password: '',
-			jsonp: '',
-			contentType: 'application/x-www-form-urlencoded'
+			password: ''
 		}, params);
-		var xhr = new XMLRequest();
+		var readyState = '',
+			timer = '',
+			xhr = new XMLRequest();
 		params.url = encodeURIComponent(params.url);
+		xhr.setRequestHeader('User-Agent', 'XMLHTTP');
 		xhr.open(params.type, params.url, params.async, params.user, params.password);
+		xhr.onreadystatechange = function() {
+			try{
+				if(xhr.readyState == 4) {
+					if(xhr.status == 200 || xhr.status == 0) {
+						clearTimeout(timer);
+						var data = xhr.responseText;
+						if(params.dataType === 'json') {
+							data = Query.parseJSON(data);
+						}
+						params.success && params.success(data);
+					}
+				};
+			}catch(e) {
+				params.error && params.error(e);
+			}finally{
+				params.complete && params.complete();
+			}
+		};
+		params.beforeSend && params.beforeSend();
+		if(type === 'GET') {
+			xhr.send(null);
+		}else {
+			xhr.setRequestHeader('Content-type', params.contentType);
+			xhr.send(Query.param(params.data));
+		}
+		timer = setTimeout(function(){
+			xhr.abort();
+		}, params.timeout);
 	},
-	getJSON: function() {
-		
+	post: function(url, data, callback, dataType) {
+		Query.ajax({
+			url: url,
+			data: data,
+			type: 'POST',
+			dataType: !dataType ? 'json' : dataType,
+			success: callback
+		});
 	},
-	post: function() {
-	
-	},
-	get: function() {
-	
+	get: function(url, params, callback, dataType) {
+		Query.ajax({
+			url: url + '?' + Query.param(params),
+			type: 'GET',
+			dataType: !dataType ? 'json' : dataType,
+			success: callback
+		});
 	},
 	param: function(json) {
 		var str = JSON.stringify(json);
-		return str.substring(2, str.length - 1).replace(/"/g, '').replace(/:/g, "=").replace(/,/g, "&");
+		return encodeURIComponent(str.substring(2, str.length - 1).replace(/"/g, '').replace(/:/g, "=").replace(/,/g, "&"));
 	},
 	 /**
      * 异步加载脚本
@@ -317,9 +354,6 @@ Query.extend({
         }
         document.getElementsByTagName('head')[0].appendChild(script);
 	}
-});
-
-Query.fn.extend({
 });
 	
 window.$ = window.Q = Query;
