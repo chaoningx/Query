@@ -117,6 +117,18 @@ Query.fn.extend({
 		}
 		return this;
 	},
+    removeAttrs: function() {
+        var attrs = arguments, j, len = attrs.length, target;
+        this.each(function(i,n) {
+            for(j = 0; j < len; j++) {
+                target = attrs[j];
+                if(n.hasAttribute(target)) {
+                    n.removeAttribute(target);
+                }
+            }
+        });
+        return this;
+    },
 	html: function(str) {
 		var target = this[0];
         if(!target) { return this; }
@@ -168,7 +180,6 @@ Query.fn.extend({
 	            }
 	        });
         }catch(e) {
-            console.log(e);
         }finally{
             return this;
         }
@@ -182,15 +193,22 @@ Query.fn.extend({
         return this;
     },
 	css: function(kv) {
-        var o;
+        var o, cssText, reg, newCss;
 		this.each(function(i, n) {
-			for(o in kv) {
-				try{
-					n.style[o] = kv[o];
-				}catch(e) {
-					continue;
-				}
-			}
+            cssText = " " + n.style.cssText;
+            try{
+                for(o in kv) {
+                    newCss = o + ": " + kv[o] + "; ";
+	                if(cssText.indexOf(o) != -1) {
+                        reg = new RegExp("\\s" + o + ":[^;]\+;");
+	                    cssText = cssText.replace(reg, " " + newCss);
+	                }else {
+	                    cssText += newCss;
+	                }
+	            }
+                n.style.cssText = cssText;
+            }catch(e) {
+            }
 		});
 		return this;
 	}

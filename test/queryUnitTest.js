@@ -68,6 +68,20 @@ test('attr()', function() {
     equal(dom.attr('data-name'), 'xie', 'data-name属性相等');
 });
 
+test('removeAttrs()', function() {
+    var dom = $('#dom-test');
+    dom.removeAttrs('data-name');
+    equal(dom.attr('data-name'), null, '移除属性成功');
+});
+
+test('removeAttrs()', function() {
+    var dom = $('#dom-test');
+    dom.attr('data-t', 'xiecn');
+    dom.removeAttrs('data-name', 'data-t');
+    equal(dom.attr('data-name'), null, '移除属性data-name成功');
+    equal(dom.attr('data-t'), null, '移除属性data-t成功');
+});
+
 test('html()', function() {
     var dom = $('#text-test');
     equal(dom.html(), 'seasontop', 'html内容相等');
@@ -104,6 +118,12 @@ test('removeClass()', function() {
     var dom = $('#dom-test');
     dom.removeClass('addClass');
     equal(dom.attr('class'), 'addClass_2', 'class删除成功。');
+});
+
+test('css()', function() {
+    var dom = $('#dom-test');
+    dom.css({ width: '100px', height: '20px', display: 'block' });
+    equal(dom.attr('style'), 'display: block; width: 100px; height: 20px; ', '添加属性成功。')
 });
 
 });
