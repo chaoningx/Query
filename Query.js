@@ -185,12 +185,21 @@ Query.fn.extend({
         }
     },
     replaceClass: function(orgin, target) {
-        var reg = new RegExp(orgin);
-        target = target ? target : '';
-        this.each(function(i, n) {
-            n.className = n.className.replace(reg, target);
-        });
-        return this;
+       if(arguments.length < 2 || !orgin) { return this; }
+       var className, target = !target ? ' ' : ' ' + target + ' ';
+       try{
+            this.each(function(i, n) {
+                if(n.className) {
+                    className = " " + n.className + " ";
+                    
+                    className = className.replace(' ' + orgin + ' ', target);
+                    n.className = Query.trim(className);
+                }
+            });
+        }catch(e) {
+        }finally{
+            return this;
+        }
     },
 	css: function(kv) {
         var o, cssText, reg, newCss;

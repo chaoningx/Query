@@ -120,6 +120,12 @@ test('removeClass()', function() {
     equal(dom.attr('class'), 'addClass_2', 'class删除成功。');
 });
 
+test('replaceClass()', function() {
+    var dom = $('#dom-test');
+    dom.replaceClass('addClass_2', 'addClass_3');
+    equal(dom.attr('class'), 'addClass_3', 'class删除成功。');
+});
+
 test('css()', function() {
     var dom = $('#dom-test');
     dom.css({ width: '100px', height: '20px', display: 'block' });
