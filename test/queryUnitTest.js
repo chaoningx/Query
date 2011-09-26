@@ -75,6 +75,37 @@ test('html()', function() {
     equal(dom.html(), 'xiechaoning', 'html变更后内容相等');
 });
     
+test('val()', function() {
+    var dom = $('#input-test');
+    equal(dom.val(), 'seasontop', 'val值相等');
+    dom.val('xiechaoning');
+    equal(dom.val(), 'xiechaoning', 'val变更后值相等');
+});
+
+test('remove()', function() {
+    var dom = $('#input-test');
+    dom.remove();
+    equal($('#input-test').length, '0', '已经移除');
+});
+
+test('empty()', function() {
+    var dom = $('#dom-test');
+    dom.empty();
+    equal($('#dom-test')[0].childNodes.length, '0', '已清空！');
+});
+
+test('addClass()', function() {
+    var dom = $('#dom-test');
+    dom.addClass('addClass').addClass('addClass_2');
+    equal(dom.attr('class'), 'addClass addClass_2', 'class添加成功。');
+});
+
+test('removeClass()', function() {
+    var dom = $('#dom-test');
+    dom.removeClass('addClass');
+    equal(dom.attr('class'), 'addClass_2', 'class删除成功。');
+});
+
 });
 
 

@@ -119,6 +119,7 @@ Query.fn.extend({
 	},
 	html: function(str) {
 		var target = this[0];
+        if(!target) { return this; }
 		if(!str) {
 			return target.innerHTML;
 		}else{
@@ -128,17 +129,14 @@ Query.fn.extend({
 	},
 	val: function(v) {
 		var target = this[0];
-		if(!target) { return this; }
-		if(v) {
+        if(!target) { return this; }
+		if(!v) {
 			return target.value;
 		}else{
 			target.value = v;
 		}
 		return this;
-	},
-    appendTo: function(target) {
-        
-    }
+	}
 });
 
 /**
@@ -146,36 +144,53 @@ Query.fn.extend({
  */
 Query.fn.extend({
 	addClass: function(className) {
+        var names;
 		this.each(function(i, n) {
-			var names = n.className;
+			names = n.className;
 			n.className = names == '' ? className : names + ' ' + className; 
 		});
 		return this;
 	},
+    removeClass: function(name) {
+        var className, j, names = (name || '').split(' '), len = names.length;
+        try{
+	        this.each(function(i, n) {
+	            if(n.nodeType === 1 && n.className) {
+                    if(name) {
+                        className = " " + n.className + " ";
+                        for(j = 0; j < len; j++) {
+                            className = className.replace(' ' + names[j] + ' ', ' ');
+                        }
+                        n.className = Query.trim(className);
+                    }else {
+                        n.className = '';
+                    }
+	            }
+	        });
+        }catch(e) {
+            console.log(e);
+        }finally{
+            return this;
+        }
+    },
+    replaceClass: function(orgin, target) {
+        var reg = new RegExp(orgin);
+        target = target ? target : '';
+        this.each(function(i, n) {
+            n.className = n.className.replace(reg, target);
+        });
+        return this;
+    },
 	css: function(kv) {
+        var o;
 		this.each(function(i, n) {
-			for(var i in kv) {
+			for(o in kv) {
 				try{
-					n.style[i] = kv[i];
+					n.style[o] = kv[o];
 				}catch(e) {
 					continue;
 				}
 			}
-		});
-		return this;
-	},
-	removeClass: function(name) {
-		var reg = new RegExp(name);
-		this.each(function(i, n) {
-			n.className = n.className.replace(reg, '');
-		});
-		return this;
-	},
-	replaceClass: function(orgin, target) {
-		var reg = new RegExp(orgin);
-		target = target ? target : '';
-		this.each(function(i, n) {
-			n.className = n.className.replace(reg, target);
 		});
 		return this;
 	}
