@@ -148,7 +148,25 @@ Query.fn.extend({
 			target.value = v;
 		}
 		return this;
-	}
+	},
+    offset: function() {
+        if(!this[0]) { return; }
+        var elem = this[0],
+            pos = { left: elem.offsetLeft, top: elem.offsetTop },
+            offsetParent = elem.offsetParent,
+            endReg = /^(?:body|html)$/i;
+        while(offsetParent && (!endReg.test(offsetParent.nodeName))) {
+            pos.left += offsetParent.offsetLeft;
+            pos.top += offsetParent.offsetTop;
+            offsetParent = offsetParent.offsetParent;
+        } 
+        return pos;
+    },
+    position: function() {
+        if(!this[0]) { return; }
+        var elem = this[0];
+        return { left: elem.offsetLeft, top: elem.offsetTop };
+    }
 });
 
 /**
@@ -398,6 +416,27 @@ Query.extend({
         }
         document.getElementsByTagName('head')[0].appendChild(script);
 	}
+});
+
+/**
+ * 动画部分
+ */
+Query.extend({
+    animate: function(el, pos, duration, callback) {
+        if(!el) { return; }
+        pos = Query.merge({ 
+            left: '',
+            top: '',
+            opacity: 1
+        }, pos);
+        var speed = {
+                slow: 800,
+                normal: 600,
+                fast: 400
+            };
+        duration = typeof duration === 'number' ? duration : speed[duration];
+        var eachTouch = 25;
+    }
 });
 	
 window.$ = window.Q = Query;

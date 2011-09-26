@@ -132,6 +132,18 @@ test('css()', function() {
     equal(dom.attr('style'), 'display: block; width: 100px; height: 20px; ', '添加属性成功。')
 });
 
+document.body.appendChild($('<div id="dom-test-2" style="position: absolute; top: 100px;left: 200px;"><div id="dom-test-2-1"></div></div>')[0]);
+test('offset()', function() {
+    var dom = $('#dom-test-2'), innerDom = $('#dom-test-2-1');
+    deepEqual(dom.offset(), { left: 200, top: 100 }, 'position: aboslute父级元素的位置正确');
+    deepEqual(innerDom.offset(), { left: 200, top: 100 }, 'position: aboslute子级元素的位置正确');
+});
+
+test('position()', function() {
+    var dom = $('#dom-test-2'), innerDom = $('#dom-test-2-1');
+    deepEqual(innerDom.position(), { left: 0, top: 0 }, '子级元素的位置正确');
+});
+
 });
 
 
