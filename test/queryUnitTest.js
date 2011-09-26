@@ -144,6 +144,15 @@ test('position()', function() {
     deepEqual(innerDom.position(), { left: 0, top: 0 }, '子级元素的位置正确');
 });
 
+test('$.createElement()', function() {
+	var dom = $.createElement('div', {
+		width: '200px',
+		height: '200px',
+		color: 'red'
+	}, { id: 'xiecn' });
+	equal(dom.style.cssText, 'width: 200px; height: 200px; color: red; ', '创建元素成功。');
+});
+
 });
 
 

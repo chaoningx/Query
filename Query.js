@@ -418,6 +418,20 @@ Query.extend({
 	}
 });
 
+Query.extend({
+	createElement: function(tag, css, pros) {
+		var t = document.createElement(tag),
+			str = JSON.stringify(css),
+			i;
+		str = str.substring(2, str.length - 1).replace(/"/g, '').replace(/,/g, "; ");
+		t.style.cssText = str;
+		for(i in pros) {
+			t.setAttribute(i, pros[i]);
+		}
+		return t;
+	}
+});
+
 /**
  * 动画部分
  */
@@ -429,13 +443,9 @@ Query.extend({
             top: '',
             opacity: 1
         }, pos);
-        var speed = {
-                slow: 800,
-                normal: 600,
-                fast: 400
-            };
+        var speed = { slow: 800, normal: 600, fast: 400 };
         duration = typeof duration === 'number' ? duration : speed[duration];
-        var eachTouch = 25;
+        
     }
 });
 	
