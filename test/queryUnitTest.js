@@ -1,3 +1,4 @@
+$(function() {
 //定义测试模块
 module( "Query" );
 //定义一个简单的函数，判断参数是不是数字
@@ -42,20 +43,38 @@ test('$.merge()', function() {
     deepEqual($.merge({ c: 2, a: 1 }, { b: 1, a: 2 }), { c: 2, a: 2 }, 'A与B有交集合并后为A所有值保存，更新与B有交集的值。');
 });
 
-test('脚本加载测试', function() {
+test('$.getScript()', function() {
     stop();
     $.getScript('source/loadTest.js', function() {
          $.getScript({
             id: 'xiecn',
             src: 'source/loadTest.js'
          }, function() {
-	         start();       
-	    });      
+             start();       
+        });      
     });
 });
 
+document.body.appendChild($('<div id="dom-test" style="display:none;"><span id="text-test">seasontop</span><input type="text" value="seasontop" id="input-test"/></div>')[0]);
+
 test('$.param()', function() {
-	equal($.param({a:1,b:1,c:1,d:1}), 'a=1&b=1&c=1&d=1', '转换成功');
+    equal($.param({a:1,b:1,c:1,d:1}), 'a%3D1%26b%3D1%26c%3D1%26d%3D1', '转换成功');
+});
+
+test('attr()', function() {
+    var dom = $('#dom-test');
+    equal(dom.attr('id'), 'dom-test', 'id属性相等');
+    dom.attr('data-name', 'xie');
+    equal(dom.attr('data-name'), 'xie', 'data-name属性相等');
+});
+
+test('html()', function() {
+    var dom = $('#text-test');
+    equal(dom.html(), 'seasontop', 'html内容相等');
+    dom.html('xiechaoning');
+    equal(dom.html(), 'xiechaoning', 'html变更后内容相等');
+});
+    
 });
 
 

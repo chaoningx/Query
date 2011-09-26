@@ -119,8 +119,7 @@ Query.fn.extend({
 	},
 	html: function(str) {
 		var target = this[0];
-		if(!target) { return this; }
-		if(str) {
+		if(!str) {
 			return target.innerHTML;
 		}else{
 			target.innerHTML = str;
@@ -136,7 +135,10 @@ Query.fn.extend({
 			target.value = v;
 		}
 		return this;
-	}
+	},
+    appendTo: function(target) {
+        
+    }
 });
 
 /**
