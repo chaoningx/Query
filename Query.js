@@ -453,14 +453,17 @@ Query.extend({
         var len = arguments.length;
         if(len < 2) { return; }
         var el = typeof el === 'string' ? document.getElementById(el) : el,
-            style = document.defaultView.getComputedStyle(el, null);
+            style = document.defaultView.getComputedStyle(el, null),
+            checkPX = function(st) {
+                return st.indexOf('px') != -1 ? Number(st.replace('px', '')) : st;
+            };
         if(len == 2) {
-            return style[cssName];
+            return checkPX(style[cssName]);
         }
         var i = 1, res = {}, cur;
         for(i; i < len; i++) {
             cur = arguments[i];
-            res[cur] = style[cur];
+            res[cur] = checkPX(style[cur]);
         }
         return res;
     }
@@ -478,12 +481,10 @@ Query.extend({
             opacity: ''
         }, pos);
         var speed = { slow: 800, normal: 600, fast: 400 },
-            orgin = { left: 0, right: 0, opacity: 0 },
+            orgin = Query.css(el, 'left', 'top', 'opacity'),
             rate = 25, timerId, done;
         if(pos.left) {
-            orgin.left = Query.css(el, 'left');
-        }
-        if(pos.top) {
+            
         }
         duration = typeof duration === 'number' ? duration : speed[duration];
         timerId = setInterval(function() {
