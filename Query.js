@@ -476,16 +476,27 @@ Query.extend({
     animate: function(el, pos, duration, callback) {
         if(!el) { return; }
         pos = Query.merge({ 
-            left: '',
+            left: '', //+=50
             top: '',
             opacity: ''
         }, pos);
         var speed = { slow: 800, normal: 600, fast: 400 },
-            orgin = Query.css(el, 'left', 'top', 'opacity'),
-            rate = 25, timerId, done;
-        if(pos.left) {
+            target = orgin = Query.css(el, 'left', 'top', 'opacity'),
+            rate = 25, timerId, done,
+            merge = function(s, t) {
+            	try{
+            		if(s.indexOf('=') != -1) {
+            			return (new Function("return " + s + t))();
+            		}
+            	}catch(e) {
+            		return (new Function(s + t))();
+            	}
+            };
             
-        }
+        pos.left && merge('target.left', 'pos.left');
+        pos.top && merge('target.top', 'pos.top');
+        if(pos.opacity) { target.opacity = pos.opacity; }
+        
         duration = typeof duration === 'number' ? duration : speed[duration];
         timerId = setInterval(function() {
             
