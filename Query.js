@@ -419,6 +419,16 @@ Query.extend({
 });
 
 Query.extend({
+    /**
+     * 创建元素
+     * <p>
+     * $.createElement('div', { height: '20px', width: '30px' }, { id: 'xiecn' });
+     * </p>
+     * @param {String} tag 元素类型
+     * @param {Object} css kv样式值
+     * @param {Object} pros kv属性值
+     * @return {Element} 新元素对象
+     */
 	createElement: function(tag, css, pros) {
 		var t = document.createElement(tag),
 			str = JSON.stringify(css),
@@ -429,7 +439,20 @@ Query.extend({
 			t.setAttribute(i, pros[i]);
 		}
 		return t;
-	}
+	},
+    /**
+     * 获取元素的css样式，包括外部样式表里的内容
+     * <p>
+     * $.css('xiecn', 'height');
+     * </p>
+     * @param {String|Element} el 元素对象或元素id
+     * @param {cssName} 样式名
+     * @return {String} 对应样式的值
+     */
+    css: function(el, cssName) {
+        var el = typeof el === 'string' ? document.getElementById(el) : el;
+        return document.defaultView.getComputedStyle(el, null)[cssName];
+    }
 });
 
 /**
@@ -443,9 +466,12 @@ Query.extend({
             top: '',
             opacity: 1
         }, pos);
-        var speed = { slow: 800, normal: 600, fast: 400 };
+        var speed = { slow: 800, normal: 600, fast: 400 },
+            rate = 25, timerId, done;
         duration = typeof duration === 'number' ? duration : speed[duration];
-        
+        timerId = setInterval(function() {
+            
+        }, rate);
     }
 });
 	
