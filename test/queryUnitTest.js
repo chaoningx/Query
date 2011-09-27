@@ -152,6 +152,16 @@ test('$.createElement()', function() {
 	}, { id: 'xiecn' });
 	equal(dom.style.cssText, 'width: 200px; height: 200px; color: red; ', '创建元素成功。');
 });
+document.body.appendChild($('<div id="dom-test-3" style="position: absolute; top: 100px;left: 200px;"><div id="dom-test-2-1"></div></div>')[0]);
+test('$.css()', function() {
+    $('#dom-test-3').css({ top: '130px' });
+    equal($.css('dom-test-3', 'position'), 'absolute', '单个样式取出成功')
+    deepEqual($.css('dom-test-3', 'position', 'top', 'left'), {
+        position: 'absolute',
+        top: '130px',
+        left: '200px'
+    }, '多个样式取出成功');
+});
 
 });
 

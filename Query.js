@@ -447,11 +447,22 @@ Query.extend({
      * </p>
      * @param {String|Element} el 元素对象或元素id
      * @param {cssName} 样式名
-     * @return {String} 对应样式的值
+     * @returns {String|Object} 对应样式的值 如果传入的是多值，那么值会JSON格式返回
      */
     css: function(el, cssName) {
-        var el = typeof el === 'string' ? document.getElementById(el) : el;
-        return document.defaultView.getComputedStyle(el, null)[cssName];
+        var len = arguments.length;
+        if(len < 2) { return; }
+        var el = typeof el === 'string' ? document.getElementById(el) : el,
+            style = document.defaultView.getComputedStyle(el, null);
+        if(len == 2) {
+            return style[cssName];
+        }
+        var i = 1, res = {}, cur;
+        for(i; i < len; i++) {
+            cur = arguments[i];
+            res[cur] = style[cur];
+        }
+        return res;
     }
 });
 
@@ -464,10 +475,16 @@ Query.extend({
         pos = Query.merge({ 
             left: '',
             top: '',
-            opacity: 1
+            opacity: ''
         }, pos);
         var speed = { slow: 800, normal: 600, fast: 400 },
+            orgin = { left: 0, right: 0, opacity: 0 },
             rate = 25, timerId, done;
+        if(pos.left) {
+            orgin.left = Query.css(el, 'left');
+        }
+        if(pos.top) {
+        }
         duration = typeof duration === 'number' ? duration : speed[duration];
         timerId = setInterval(function() {
             
