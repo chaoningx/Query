@@ -219,6 +219,11 @@ Query.fn.extend({
             return this;
         }
     },
+    hasClass: function(name) {
+        var o = this[0];
+        if(!o) { return; }
+        return new RegExp(RegExp("(\\s|^)" + name + "(\\s|$)")).test(name);
+    },
 	css: function(kv) {
         var o, cssText, reg, newCss;
 		this.each(function(i, n) {
@@ -275,7 +280,7 @@ Query.extend({
     merge: function(source, target) {
 	    var len = arguments.length;
 	    if(len < 1) { return; }
-	    if(len < 2) { return arguments[0]; }
+	    if(len < 2 || !arguments[1]) { return arguments[0]; }
 	    var r = {};
 	    for(var i in source) {
 	        r[i] = typeof target[i] == 'undefined' ? source[i] : target[i];
