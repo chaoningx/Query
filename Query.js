@@ -222,7 +222,7 @@ Query.fn.extend({
     hasClass: function(name) {
         var o = this[0];
         if(!o) { return; }
-        return new RegExp(RegExp("(\\s|^)" + name + "(\\s|$)")).test(name);
+        return new RegExp(RegExp("(\\s|^)" + name + "(\\s|$)")).test(o.className);
     },
 	css: function(kv) {
         var o, cssText, reg, newCss;
@@ -299,7 +299,74 @@ Query.extend({
 		b.CHROME = /chrome/.test(a);
 		b.IPHONE = /iphone os/.test(a);
 		return b;
-	}
+	},
+    /**
+     * 秒转换为hh:mm:ss时间格式
+     * @param {String || Number} seconds 需要转换的秒数
+     */
+    secondToDate: function(seconds) {
+        var hh,mm,ss;
+        if(!seconds || seconds < 0) {
+            return;
+        }
+        hh = seconds / 3600 | 0;
+        seconds = parseInt(seconds) - hh * 3600;
+        if(parseInt(hh) < 10) {
+            hh = "0" + hh;
+        }
+        mm = seconds / 60| 0;
+        ss = parseInt(seconds) - mm * 60;
+        if(parseInt(mm) < 10) {
+            mm = "0" + mm;   
+        }
+        if(ss < 10){
+            ss = "0" + ss;     
+        }
+        return hh != "00" ? hh + ":"+ mm +":" + ss : mm +":" + ss;
+    },
+    /**
+     * 日期格式化方法
+     * <p>
+     * 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+     * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+     * 例子：
+     * (new Date()).format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+     * (new Date()).format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18 
+     * </p>
+     * @param {Date} date 需要格式化的时间对象
+     * @param {String} format 日期格式
+     * @return {String} 格式化后的日期
+     */
+    format: function(date, format) {
+        var _ = date,
+            o = {
+	            "M+": _.getMonth() + 1,
+	            "d+": _.getDate(),
+	            "h+": _.getHours(),
+	            "m+": _.getMinutes(),
+	            "s+": _.getSeconds(),
+	            "q+": Math.floor((_.getMonth() + 3) / 3),  //quarter
+	            "S": _.getMilliseconds() //millisecond
+	        };
+        if (/(y+)/.test(format)) {
+            format = format.replace(RegExp.$1, (_.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(format)) {
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+            }
+        }
+        return format;
+    },
+    /**
+     * 把指定时间转换为timeZone指向的时区时长
+     * @param {Date} date 需要转换的时间对象
+     * @param {Number} TimeZone 时区
+     * @return {Date} 转化后的时间对象
+     */
+    convertTimeByZone: function(date, TimeZone) {
+        return new Date(date.getTime() + date.getTimezoneOffset() * 60000 + (3600000 * TimeZone));
+    }
 });
 
 /**
