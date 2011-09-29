@@ -538,6 +538,9 @@ Query.extend({
             res[cur] = checkPX(style[cur]);
         }
         return res;
+    },
+    g: function(id) {
+    	return document.getElementById(id);
     }
 });
 
