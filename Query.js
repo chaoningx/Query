@@ -558,10 +558,10 @@ Query.extend({
             merge = function(s, t) {
             	try{
             		if(s.indexOf('=') != -1) {
-            			return (new Function("return " + s + t))();
+            			return (new Function(s + t))();
             		}
             	}catch(e) {
-            		return (new Function(s + t))();
+            		return (new Function(s + "=" + t))();
             	}
             };
             
