@@ -202,15 +202,15 @@ Query.fn.extend({
             return this;
         }
     },
-    replaceClass: function(orgin, target) {
-       if(arguments.length < 2 || !orgin) { return this; }
+    replaceClass: function(origin, target) {
+       if(arguments.length < 2 || !origin) { return this; }
        var className, target = !target ? ' ' : ' ' + target + ' ';
        try{
             this.each(function(i, n) {
                 if(n.className) {
                     className = " " + n.className + " ";
                     
-                    className = className.replace(' ' + orgin + ' ', target);
+                    className = className.replace(' ' + origin + ' ', target);
                     n.className = Query.trim(className);
                 }
             });
@@ -541,6 +541,16 @@ Query.extend({
     },
     g: function(id) {
     	return document.getElementById(id);
+    },
+    eval: function(str){
+        return (new Function(str))();
+    },
+    cloneJSON: function(obj) {
+        var o = {}, i;
+        for(i in obj) {
+            o[i] = obj[i];
+        }
+        return o;
     }
 });
 
@@ -555,27 +565,56 @@ Query.extend({
             top: '',
             opacity: ''
         }, pos);
-        var speed = { slow: 800, normal: 600, fast: 400 },
-            target = orgin = Query.css(el, 'left', 'top', 'opacity'),
+        var speed = { slow: 600, normal: 400, fast: 200 },
+            target = Query.css(el, 'left', 'top', 'opacity'),
+            origin = Query.cloneJSON(target),
             rate = 25, timerId, done,
             merge = function(s, t) {
             	try{
             		if(s.indexOf('=') != -1) {
-            			return (new Function(s + t))();
+            			return Query.eval(s + t);
             		}
             	}catch(e) {
-            		return (new Function(s + "=" + t))();
+            		return Query.eval(s + "=" + t);
             	}
-            };
+            },
+            up = function() {},
+            down = function() {};
             
         pos.left && merge('target.left', 'pos.left');
         pos.top && merge('target.top', 'pos.top');
-        if(pos.opacity) { target.opacity = pos.opacity; }
+        if(pos.opacity !== '') { 
+            target.opacity = pos.opacity; 
+        }
         
-        duration = typeof duration === 'number' ? duration : speed[duration];
-        timerId = setInterval(function() {
-            
-        }, rate);
+        var sp = speed[duration] ? speed[duration] : duration,
+            count = parseFloat(sp / 25 + sp % 25),
+            timerId, 
+            opacity = parseFloat(origin.opacity),
+            speedUp = Math.abs(parseFloat(target.opacity) - opacity) / count;
+            if(target.opacity > opacity) {
+                timerId = setInterval(function() {
+	                if(count < 1) {
+	                    clearInterval(timerId);
+	                    callback && callback();
+	                    return ;
+	                }
+                    opacity += speedUp;
+	                el.style.opacity = opacity;
+                    count --;
+	            }, 25);
+            }else {
+                timerId = setInterval(function() {
+	                if(count < 1) {
+	                    clearInterval(timerId);
+	                    callback && callback();
+	                    return ;
+	                }
+                    opacity -= speedUp;
+	                el.style.opacity = opacity;
+                    count --;
+	            }, 25);
+            }
     }
 });
 	
