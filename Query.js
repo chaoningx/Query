@@ -565,56 +565,87 @@ Query.extend({
             top: '',
             opacity: ''
         }, pos);
-        var speed = { slow: 600, normal: 400, fast: 200 },
-            target = Query.css(el, 'left', 'top', 'opacity'),
-            origin = Query.cloneJSON(target),
-            rate = 25, timerId, done,
-            merge = function(s, t) {
-            	try{
-            		if(s.indexOf('=') != -1) {
-            			return Query.eval(s + t);
-            		}
-            	}catch(e) {
-            		return Query.eval(s + "=" + t);
-            	}
-            },
-            up = function() {},
-            down = function() {};
-            
-        pos.left && merge('target.left', 'pos.left');
-        pos.top && merge('target.top', 'pos.top');
-        if(pos.opacity !== '') { 
-            target.opacity = pos.opacity; 
-        }
         
-        var sp = speed[duration] ? speed[duration] : duration,
-            count = parseFloat(sp / 25 + sp % 25),
-            timerId, 
-            opacity = parseFloat(origin.opacity),
-            speedUp = Math.abs(parseFloat(target.opacity) - opacity) / count;
-            if(target.opacity > opacity) {
-                timerId = setInterval(function() {
-	                if(count < 1) {
-	                    clearInterval(timerId);
-	                    callback && callback();
-	                    return ;
-	                }
-                    opacity += speedUp;
-	                el.style.opacity = opacity;
-                    count --;
-	            }, 25);
-            }else {
-                timerId = setInterval(function() {
-	                if(count < 1) {
-	                    clearInterval(timerId);
-	                    callback && callback();
-	                    return ;
-	                }
-                    opacity -= speedUp;
-	                el.style.opacity = opacity;
-                    count --;
-	            }, 25);
+        var rate = 25,
+            speed = ({ slow: 600, normal: 400, fast: 200 })[duration];
+        speed = speed ? speed : duration;
+        var count = speed / rate + speed % rate,
+            timerId,
+            merge = function(s, t) {
+                s = s ? s : 0;
+        		if(t.indexOf('=') != -1) {
+                    var arr = t.split('='), n = Number(arr[1]);
+                    return arr[0] === '-' ? s - n : s + n;
+        		}else {
+                    return t;
+                }
+            },
+            runTime = function (fn) {
+                 timerId = setInterval(function() {
+                    if(count-- < 1) {
+                        clearInterval(timerId);
+                        callback && callback();
+                        return ;
+                    }
+                    fn();
+                }, 25);
+            },
+            target = {},
+            runMathod = {};
+        
+        if(pos.opacity !== '') {
+            target.opacity = parseFloat(pos.opacity);
+            target.originOpacity = parseFloat(Query.css(el, 'opacity'));
+            target.opacitySpeedUp = Math.abs(target.opacity - target.originOpacity) / count;
+            var high = function() {
+                    target.originOpacity += target.opacitySpeedUp;
+	            },
+	            low = function() {
+                    target.originOpacity -= target.opacitySpeedUp;
+                },
+                fn = target.opacity > target.originOpacity ? high : low;
+            runMathod.opacityFn = function() {
+                fn();
+                el.style.opacity = target.originOpacity;
+            };
+        };
+        
+        if(pos.left) {
+            target.left = merge(target.left, pos.left);
+            var left = Query.css(el, 'left');
+            target.originLeft = parseFloat(left === "auto" ? 0 : left);
+            target.leftSpeedUp = Math.abs(target.left - target.originLeft) / count;
+            var high = function() {
+                    target.originLeft += target.leftSpeedUp;
+                },
+                low = function() {
+                    target.originLeft -= target.leftSpeedUp;
+                },
+                fn = target.left > target.originLeft ? high : low;
+            runMathod.leftFn = function() {
+                fn();
+                el.style.left = target.originLeft;
+            };
+        }
+//        pos.left && merge('target.left', 'pos.left');
+//        pos.top && merge('target.top', 'pos.top');
+        
+        runTime(function() {
+            for(var i in runMathod) {
+                runMathod[i]();
             }
+        });
+//            if(target.opacity > opacity) {
+//				runTime(function() {
+//                    opacity += speedUp;
+//                    el.style.opacity = opacity;
+//				});
+//            }else {
+//                runTime(function() {
+//                   opacity -= speedUp;
+//                    el.style.opacity = opacity;
+//                });
+//            }
     }
 });
 	
