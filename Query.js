@@ -505,8 +505,10 @@ Query.extend({
 		var t = document.createElement(tag),
 			str = JSON.stringify(css),
 			i;
-		str = str.substring(2, str.length - 1).replace(/"/g, '').replace(/,/g, "; ");
-		t.style.cssText = str;
+		if(str.length > 2) {
+			str = str.substring(2, str.length - 1).replace(/"/g, '').replace(/,/g, "; ");
+			t.style.cssText = str;
+		}
 		for(i in pros) {
 			t.setAttribute(i, pros[i]);
 		}
