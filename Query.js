@@ -305,15 +305,15 @@ Query.extend({
      */
     secondFormat: function(t) {
         try{
-		t = parseInt(t);
-		var s = t % 60,
-			m = (t - s) % 3600 / 60,
-			h = (t - s - m * 60) % 21000 / 3600;
-		s = (s + '').length < 2 ? '0' + s : s;
-		m = (m + '').length < 2 ? '0' + m : m;
-		h = (h + '').length < 2 ? '0' + h : h;
-		return h + ':' + m + ':' + s;
-	}catch(e) {};
+			t = parseInt(t);
+			var s = t % 60,
+				m = (t - s) % 3600 / 60,
+				h = (t - s - m * 60) % 21000 / 3600;
+			s = (s + '').length < 2 ? '0' + s : s;
+			m = (m + '').length < 2 ? '0' + m : m;
+			h = (h + '').length < 2 ? '0' + h : h;
+			return h + ':' + m + ':' + s;
+		}catch(e) {};
     },
     /**
      * 日期格式化方法
@@ -492,17 +492,26 @@ Query.extend({
      * @param {Object} pros kv属性值
      * @return {Element} 新元素对象
      */
-    createElement: function(tag, css, pros) {
-	var t = document.createElement(tag),
-		i, j;
-	for(i in css) {
-		t.style[i] = css[i];
-	}
-	for(j in pros) {
-		t.setAttribute(i, pros[i]);
-	}
-	return t;
-    },
+	createElement: function(tag, css, pros) {
+		var t = document.createElement(tag),
+			i;
+		for(i in css) {
+			t.style[i] = css[i];
+		}
+		Query.setAttrs(t, pros);
+		return t;
+	},
+	/**
+	 * 设置属性
+	 * @param {Element} el
+	 * @param {Object} attrs 属性集合 JSON格式
+	 */
+	setAttrs: function(el, attrs) {
+		var i;
+		for(i in attrs) {
+			el.setAttribute(i, attrs[i]);
+		}
+	},
     /**
      * 获取元素的css样式，包括外部样式表里的内容
      * <p>
@@ -544,7 +553,13 @@ Query.extend({
         return o;
     },
     addClass: function(el, className) {
+    	if(!Query.hasClass(el, name)) {
+    		return false;
+    	}
     	var names = el.className;
+    	if(arguments.length > 2) {
+			className  = Array.prototype.slice.call(arguments, 1).join(' ');
+		}
 		el.className = names == '' ? className : names + ' ' + className; 
 		return this;
     },
@@ -568,16 +583,34 @@ Query.extend({
     hasClass: function(el, name) {
         return new RegExp(RegExp("(\\s|^)" + name + "(\\s|$)")).test(el.className);
     },
-    replaceClass: function(el, origin, target){
-	if(arguments.length < 3 || !el || !origin ) { return; }
-	var className = el.className,
-		target = !target ? ' ' : ' ' + target + ' ';
-	if(className) {
-		className = " " + className + " ";
-		className = className.replace(' ' + origin + ' ', target);
-		el.className = Query.trim(className);
+    append: function(el, element) {
+		if(typeof el === 'string') {
+			el = document.getElementById(el);
+		};
+		var len = arguments.length,
+			temp = document.createDocumentFragment();
+		if(len < 2) {
+			el.appendChild(element);
+		}else {
+			var i = 0,
+				arr = Array.prototype.slice.call(arguments, 1);
+				len = len -1;
+			for(i; i < len; i++) {
+				temp.appendChild(arr[i]);
+			}
+			el.appendChild(temp);
+		}
+	},
+	replaceClass: function(el, origin, target){
+		if(arguments.length < 3 || !el || !origin ) { return; }
+		var className = el.className,
+			target = !target ? ' ' : ' ' + target + ' ';
+		if(className) {
+			className = " " + className + " ";
+			className = className.replace(' ' + origin + ' ', target);
+			el.className = Query.trim(className);
+		}
 	}
-    }
 });
 	
 window.$ = window.Q = Query;
