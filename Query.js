@@ -492,17 +492,17 @@ Query.extend({
      * @param {Object} pros kv属性值
      * @return {Element} 新元素对象
      */
-	createElement: function(tag, css, pros) {
-		var t = document.createElement(tag),
-			i, j;
-		for(i in css) {
-			t.style[i] = css[i];
-		}
-		for(j in pros) {
-			t.setAttribute(i, pros[i]);
-		}
-		return t;
-	},
+    createElement: function(tag, css, pros) {
+	var t = document.createElement(tag),
+		i, j;
+	for(i in css) {
+		t.style[i] = css[i];
+	}
+	for(j in pros) {
+		t.setAttribute(i, pros[i]);
+	}
+	return t;
+    },
     /**
      * 获取元素的css样式，包括外部样式表里的内容
      * <p>
