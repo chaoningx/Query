@@ -304,25 +304,17 @@ Query.extend({
      * 秒转换为hh:mm:ss时间格式
      * @param {String || Number} seconds 需要转换的秒数
      */
-    secondToDate: function(seconds) {
-        var hh,mm,ss;
-        if(!seconds || seconds < 0) {
-            return;
-        }
-        hh = seconds / 3600 | 0;
-        seconds = parseInt(seconds) - hh * 3600;
-        if(parseInt(hh) < 10) {
-            hh = "0" + hh;
-        }
-        mm = seconds / 60| 0;
-        ss = parseInt(seconds) - mm * 60;
-        if(parseInt(mm) < 10) {
-            mm = "0" + mm;   
-        }
-        if(ss < 10){
-            ss = "0" + ss;     
-        }
-        return hh != "00" ? hh + ":"+ mm +":" + ss : mm +":" + ss;
+    secondToDate: function(t) {
+        try{
+		t = parseInt(t);
+		var s = t % 60,
+			m = (t - s) % 3600 / 60,
+			h = (t - s - m * 60) % 21000 / 3600;
+		s = (s + '').length < 2 ? '0' + s : s;
+		m = (m + '').length < 2 ? '0' + m : m;
+		h = (h + '').length < 2 ? '0' + h : h;
+		return h + ':' + m + ':' + s;
+	}catch(e) {};
     },
     /**
      * 日期格式化方法
