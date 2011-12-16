@@ -304,7 +304,7 @@ Query.extend({
      * 秒转换为hh:mm:ss时间格式
      * @param {String || Number} seconds 需要转换的秒数
      */
-    secondToDate: function(t) {
+    secondFormat: function(t) {
         try{
 		t = parseInt(t);
 		var s = t % 60,
