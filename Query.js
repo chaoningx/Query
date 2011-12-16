@@ -209,7 +209,6 @@ Query.fn.extend({
             this.each(function(i, n) {
                 if(n.className) {
                     className = " " + n.className + " ";
-                    
                     className = className.replace(' ' + origin + ' ', target);
                     n.className = Query.trim(className);
                 }
@@ -570,6 +569,16 @@ Query.extend({
     },
     hasClass: function(el, name) {
         return new RegExp(RegExp("(\\s|^)" + name + "(\\s|$)")).test(el.className);
+    },
+    replaceClass: function(el, origin, target){
+	if(arguments.length < 3 || !el || !origin ) { return; }
+	var className = el.className,
+		target = !target ? ' ' : ' ' + target + ' ';
+	if(className) {
+		className = " " + className + " ";
+		className = className.replace(' ' + origin + ' ', target);
+		el.className = Query.trim(className);
+	}
     }
 });
 	
