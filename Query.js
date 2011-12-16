@@ -494,13 +494,11 @@ Query.extend({
      */
 	createElement: function(tag, css, pros) {
 		var t = document.createElement(tag),
-			str = JSON.stringify(css),
-			i;
-		if(str.length > 2) {
-			str = str.substring(2, str.length - 1).replace(/"/g, '').replace(/,/g, "; ");
-			t.style.cssText = str;
+			i, j;
+		for(i in css) {
+			t.style[i] = css[i];
 		}
-		for(i in pros) {
+		for(j in pros) {
 			t.setAttribute(i, pros[i]);
 		}
 		return t;
