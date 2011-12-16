@@ -553,6 +553,31 @@ Query.extend({
             o[i] = obj[i];
         }
         return o;
+    },
+    addClass: function(el, className) {
+    	var names = el.className;
+		el.className = names == '' ? className : names + ' ' + className; 
+		return this;
+    },
+    removeClass: function(el, name) {
+    	if(!Query.hasClass(el, name)) {
+    		return false;
+    	}
+		var className, j, names = (name || '').split(' '), len = names.length;
+        if(el.nodeType === 1 && el.className) {
+            if(name) {
+                className = " " + el.className + " ";
+                for(j = 0; j < len; j++) {
+                    className = className.replace(' ' + names[j] + ' ', ' ');
+                }
+                el.className = Query.trim(className);
+            }else {
+                el.className = '';
+            }
+        }
+    },
+    hasClass: function(el, name) {
+        return new RegExp(RegExp("(\\s|^)" + name + "(\\s|$)")).test(el.className);
     }
 });
 	
